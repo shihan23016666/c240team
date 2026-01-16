@@ -1,320 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Botpress -->
+  <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
+  <script src="https://files.bpcontent.cloud/2026/01/15/01/20260115013554-936FEACC.js" defer></script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interior Design Chatbot Suite - Main Hub</title>
+  <title>Interior Design Chatbot Suite</title>
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
-
+    /* ===== General Styles ===== */
     body {
-      min-height: 100vh;
-      color: #fff;
-      background: url("https://img1.wsimg.com/isteam/ip/7e5ed94d-1f2f-4064-94d9-8f27c9cdec58/travel.jpg")
-                  center/cover no-repeat fixed;
-      position: relative;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9; /* CLEAN WHITE BACKGROUND */
+      color: #333;
+      scroll-behavior: smooth;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.60);
-      z-index: 0;
-    }
+    a { text-decoration: none; color: inherit; }
 
-    /* Navbar */
+    /* ===== Navbar ===== */
     .navbar {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.18);
     }
-    .navbar .wrap {
+
+    .navbar .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 14px 18px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      align-items: center;
+      padding: 12px 20px;
     }
-    .logo {
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: 0.2px;
-      color: #fff;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .nav-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .nav-btn {
-      border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-    .nav-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
-    .nav-btn.active { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.35); }
 
-    /* Sections */
-    .section { display: none; position: relative; z-index: 1; }
+    .logo {
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: #333;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-size: 0.95rem;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: #eaeaea;
+    }
+
+    /* ===== Sections ===== */
+    .section { display: none; }
     .section.active { display: block; }
 
-    .container {
+    .container-main {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 40px 18px 55px;
+      padding: 60px 20px;
     }
 
-    /* Hero */
-    .hero-card {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.20);
-      border-radius: 18px;
-      padding: 30px 22px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 26px rgba(0,0,0,0.22);
-      text-align: center;
-    }
-    .hero-card h1 {
-      font-size: 2.1rem;
-      margin-bottom: 10px;
-      line-height: 1.2;
-    }
-    .hero-card p {
-      max-width: 820px;
-      margin: 0 auto;
-      opacity: 0.92;
-      line-height: 1.6;
-      font-size: 1rem;
-    }
-
-    /* Cards grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-top: 22px;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.20);
-      border-radius: 16px;
-      padding: 18px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 175px;
-    }
-
-    .card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .card-title {
-      font-weight: 800;
-      font-size: 1.05rem;
-    }
-
-    .tag {
-      font-size: 0.8rem;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.10);
-      opacity: 0.95;
-      white-space: nowrap;
-    }
-
-    .card p {
-      font-size: 0.95rem;
-      line-height: 1.55;
-      opacity: 0.9;
-      flex: 1;
-    }
-
-    .btn {
-      display: inline-block;
-      text-align: center;
-      width: 100%;
-      padding: 11px 12px;
+    /* ===== Hero ===== */
+    .hero {
+      background: #fff;
       border-radius: 12px;
-      font-weight: 800;
-      border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.90);
-      color: #0b1220;
-      text-decoration: none;
-      transition: 0.2s ease;
-    }
-    .btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
-
-    /* Footer */
-    .footer {
-      margin-top: 18px;
+      padding: 40px 20px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
-      opacity: 0.85;
-      font-size: 0.9rem;
-      line-height: 1.6;
     }
 
-    /* Small screens */
-    @media (max-width: 560px) {
-      .hero-card h1 { font-size: 1.7rem; }
-      .nav-actions { gap: 8px; }
-      .nav-btn { font-size: 0.9rem; padding: 8px 10px; }
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #222;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #555;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ===== Info ===== */
+    .info-section {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .info-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #222;
+    }
+
+    .info-section p {
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    /* ===== Media ===== */
+    .media-section {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .media-item {
+      flex: 1;
+      height: 380px;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .media-item img,
+    .media-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    @media (max-width: 768px) {
+      .media-section {
+        flex-direction: column;
+      }
+      .media-item {
+        height: 260px;
+      }
     }
   </style>
 </head>
 
 <body>
+
   <!-- Navbar -->
   <nav class="navbar">
-    <div class="wrap">
-      <a class="logo" href="#" id="logoLink">Interior Design Chatbot Suite</a>
+    <div class="container">
+      <div class="logo">Interior Design Chatbot Suite</div>
 
-      <div class="nav-actions">
-        <button class="nav-btn active" data-section="home">Home</button>
-        <button class="nav-btn" data-section="websites">Websites</button>
-        <button class="nav-btn" data-section="about">About</button>
-      </div>
+      <ul class="nav-links">
+        <!-- MAIN HUB LINK (IMPORTANT) -->
+        <li>
+          <a class="nav-btn" href="https://shihan23016666.github.io/c240team/" target="_blank">
+            Main Hub
+          </a>
+        </li>
+
+        <li><button class="nav-btn" data-section="welcome">Home</button></li>
+        <li><button class="nav-btn" data-section="landed">Landed Property</button></li>
+      </ul>
     </div>
   </nav>
 
-  <!-- HOME -->
-  <section id="home" class="section active">
-    <div class="container">
-      <div class="hero-card">
-        <h1>Main Hub Page</h1>
+  <!-- Welcome -->
+  <section id="welcome" class="section active">
+    <div class="container-main">
+      <div class="hero">
+        <h1>Welcome to Interior Design Chatbot Suite</h1>
         <p>
-          This page combines all our GitHub Pages links into one place.
-          Click into each website to view the chatbot experience and design content created by different team members.
+          Your AI assistant for landed property renovation rules, budget planning,
+          and interior design inspiration in Singapore.
         </p>
-      </div>
-
-      <div class="footer">
-        Tip: This hub is the only link you submit. Inside, it redirects to the other deployed websites.
       </div>
     </div>
   </section>
 
-  <!-- WEBSITES -->
-  <section id="websites" class="section">
-    <div class="container">
-      <div class="hero-card" style="text-align:left;">
-        <h1 style="text-align:center;">Our Deployed Websites</h1>
-        <p style="text-align:center;">
-          Choose a site below. It will open in a new tab.
+  <!-- Landed -->
+  <section id="landed" class="section">
+    <div class="container-main">
+      <div class="hero">
+        <h1>Smart Landed Property Renovation Guidance</h1>
+        <p>
+          Understand regulations, estimate renovation budgets, and plan your design
+          with confidence before engaging contractors.
         </p>
+      </div>
 
-        <div class="grid">
-          <div class="card">
-            <div class="card-top">
-              <div class="card-title">HDB Chatbot Suite</div>
-              <div class="tag">ganyuxuan23</div>
-            </div>
-            <p>HDB-focused chatbot page with section navigation, media, and Botpress integration.</p>
-            <a class="btn" href="https://ganyuxuan23-droid.github.io/Interior-Design-Chatbot-Suite-HDB/" target="_blank" rel="noopener noreferrer">
-              Open HDB Website
-            </a>
-          </div>
+      <div class="info-section">
+        <h2>Landed Property Renovation Info</h2>
+        <p>
+          Guidance on A&A works, extensions, renovation limits, and interior planning
+          tailored specifically for landed homes.
+        </p>
+      </div>
 
-          <div class="card">
-            <div class="card-top">
-              <div class="card-title">Interior Design Chatbot Suite</div>
-              <div class="tag">yantingg123</div>
-            </div>
-            <p>Main interior design chatbot suite website deployed on GitHub Pages.</p>
-            <a class="btn" href="https://yantingg123.github.io/interior-design-chatbot-suite/" target="_blank" rel="noopener noreferrer">
-              Open Suite Website
-            </a>
-          </div>
-
-          <div class="card">
-            <div class="card-top">
-              <div class="card-title">Commercial Chatbot</div>
-              <div class="tag">faisasala</div>
-            </div>
-            <p>Commercial-focused chatbot deployment, separate page and content structure.</p>
-            <a class="btn" href="https://faisasala.github.io/commercial-chatbot/" target="_blank" rel="noopener noreferrer">
-              Open Commercial Website
-            </a>
-          </div>
+      <div class="media-section">
+        <div class="media-item">
+          <video controls preload="metadata" playsinline>
+            <source src="Singapore%20Landed%20Renovation.mp4" type="video/mp4">
+          </video>
         </div>
 
-        <div class="footer">
-          If you have more links later, copy one card and update the URL + title.
+        <div class="media-item">
+          <img src="Screenshot%202026-01-14%20143953.png" alt="Interior Design Inspiration">
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about" class="section">
-    <div class="container">
-      <div class="hero-card">
-        <h1>About This Project</h1>
-        <p>
-          This is a student-built project that demonstrates how conversational AI can support users in interior design planning.
-          Our websites cover different contexts (HDB and Commercial) and are deployed separately on GitHub Pages.
-        </p>
-      </div>
-
-      <div class="footer">
-        Built by students · GitHub Pages deployment · Botpress webchat integration
-      </div>
-    </div>
-  </section>
-
-  <!-- NAV SCRIPT -->
+  <!-- Script -->
   <script>
-    const navButtons = document.querySelectorAll(".nav-btn");
+    const buttons = document.querySelectorAll(".nav-btn[data-section]");
     const sections = document.querySelectorAll(".section");
-    const logoLink = document.getElementById("logoLink");
 
     function showSection(id) {
-      sections.forEach(sec => sec.classList.remove("active"));
-      navButtons.forEach(btn => btn.classList.remove("active"));
-
-      const target = document.getElementById(id);
-      if (target) target.classList.add("active");
-
-      const activeBtn = document.querySelector(`.nav-btn[data-section="${id}"]`);
-      if (activeBtn) activeBtn.classList.add("active");
-
+      sections.forEach(s => s.classList.remove("active"));
+      document.getElementById(id)?.classList.add("active");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    navButtons.forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        showSection(btn.dataset.section);
-      });
-    });
-
-    logoLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      showSection("home");
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => showSection(btn.dataset.section));
     });
   </script>
+
 </body>
 </html>
-  
