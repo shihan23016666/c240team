@@ -1,84 +1,622 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Combined Renovation & Chatbot Tools</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renovation & Design Suite</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #fafafa;
-        }
-        header {
-            background: #1a73e8;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-        }
-        nav {
-            display: flex;
-            justify-content: center;
-            background: #eeeeee;
-            padding: 0.5rem;
-        }
-        nav a {
-            margin: 0 1rem;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-        section {
-            margin: 2rem auto;
-            max-width: 1100px;
-        }
-        iframe {
-            width: 100%;
-            min-height: 600px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-        }
-        h2 {
-            margin-top: 0;
-            color: #444;
-        }
-    </style>
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1b33cc;
+      --stroke:#ffffff1f;
+      --text:#e9eefc;
+      --muted:#b9c4e6;
+      --brand:#5eead4;
+      --brand2:#60a5fa;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
+
+    /* ===== Background ===== */
+    .bg{
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(96,165,250,.22), transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, rgba(94,234,212,.18), transparent 60%),
+        radial-gradient(700px 500px at 50% 90%, rgba(167,139,250,.16), transparent 60%),
+        linear-gradient(180deg, #0b1220 0%, #070c18 100%);
+      z-index:-3;
+    }
+
+    .noise{
+      position:fixed;
+      inset:0;
+      background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+      opacity:.12;
+      mix-blend-mode:overlay;
+      z-index:-2;
+      pointer-events:none;
+    }
+
+    /* ===== Layout ===== */
+    .container{
+      width:min(1100px, 92%);
+      margin:0 auto;
+    }
+
+    /* ===== Navbar ===== */
+    .nav-wrap{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,.55));
+      border-bottom:1px solid var(--stroke);
+    }
+    nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.2px;
+      white-space:nowrap;
+    }
+    .brand-badge{
+      width:34px;height:34px;
+      border-radius:12px;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      box-shadow: 0 8px 22px rgba(96,165,250,.25);
+      display:grid;
+      place-items:center;
+      color:#081224;
+      font-weight:900;
+    }
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .nav-links a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:600;
+      font-size:14px;
+      padding:10px 12px;
+      border-radius:12px;
+      transition: .2s ease;
+    }
+    .nav-links a:hover{
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+    }
+    .cta{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:14px;
+      text-decoration:none;
+      transition:.2s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
+    .btn.primary{
+      border:none;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      color:#061226;
+    }
+
+    /* ===== Hero ===== */
+    .hero{
+      padding:56px 0 22px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:26px;
+      align-items:stretch;
+    }
+    .hero-card{
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 240px at 30% 0%, rgba(96,165,250,.22), transparent 55%),
+                  radial-gradient(520px 240px at 85% 10%, rgba(94,234,212,.18), transparent 55%);
+      z-index:0;
+    }
+    .hero-card > *{ position:relative; z-index:1; }
+
+    .kicker{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      border-radius:999px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:12px;
+      margin-bottom:14px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height:1.08;
+      letter-spacing:-.6px;
+    }
+    .sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+      max-width: 60ch;
+    }
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .stat-card{
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:14px;
+      box-shadow: var(--shadow);
+    }
+    .stat-top{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .stat-title{
+      font-weight:800;
+      font-size:16px;
+      margin:0;
+    }
+    .stat-text{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .pill-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      font-size:12px;
+      font-weight:700;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+    }
+
+    /* ===== Services cards (NOT bots embedded) ===== */
+    .section{
+      padding:28px 0 60px;
+    }
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      margin: 8px 0 16px;
+    }
+    .section-head h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.2px;
+    }
+    .section-head p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      max-width: 60ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:14px;
+    }
+    .card{
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height: 240px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(320px 140px at 20% 0%, rgba(96,165,250,.16), transparent 65%);
+      pointer-events:none;
+    }
+    .card > *{ position:relative; z-index:1; }
+
+    .icon{
+      width:44px;height:44px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      color:#061226;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+    }
+    .card h3{
+      margin:2px 0 0;
+      font-size:16px;
+      letter-spacing:-.2px;
+    }
+    .card p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+      flex:1;
+    }
+    .card .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:6px;
+    }
+    .tiny{
+      font-size:12px;
+      color:var(--muted);
+      text-decoration:none;
+    }
+    .tiny:hover{ color:var(--text); }
+
+    /* ===== Modal / Drawer ===== */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:100;
+    }
+    .modal.open{ display:flex; }
+    .modal-card{
+      width:min(1050px, 100%);
+      height:min(86vh, 760px);
+      background: rgba(15,27,51,.92);
+      border:1px solid var(--stroke);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-top{
+      padding:12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:1px solid var(--stroke);
+      gap:10px;
+    }
+    .modal-title{
+      font-weight:800;
+      font-size:14px;
+      color:var(--text);
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .close{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:8px 12px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .close:hover{ background: rgba(255,255,255,.09); }
+
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      background:#fff;
+      flex:1;
+    }
+
+    /* ===== Footer ===== */
+    footer{
+      border-top:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      padding:22px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .foot{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px){
+      .grid{ grid-template-columns: 1fr; }
+      .nav-links{ display:none; } /* keep it clean on mobile */
+    }
+  </style>
 </head>
+
 <body>
+  <div class="bg"></div>
+  <div class="noise"></div>
 
-<header>
-    <h1>Renovation & Interior Design Chatbot Suite</h1>
-    <p>Access all property renovation tools from one place</p>
-</header>
+  <!-- NAV -->
+  <div class="nav-wrap">
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <div class="brand-badge">RD</div>
+          <div>Renovation & Design Suite</div>
+        </div>
 
-<nav>
-    <a href="#landed">Landed Renovation</a>
-    <a href="#commercial">Commercial Chatbot</a>
-    <a href="#condo">Condo Chatbot</a>
-    <a href="#hdb">HDB Chatbot</a>
-</nav>
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#assistants">Assistants</a>
+          <a href="#about">About</a>
+        </div>
 
-<section id="landed">
-    <h2>Landed Renovation Advisor</h2>
-    <iframe src="https://shihan23016666.github.io/landed-renovation-advisor/" title="Landed Renovation Advisor"></iframe>
-</section>
+        <div class="cta">
+          <a class="btn" href="#assistants">Explore</a>
+          <button class="btn primary" onclick="openTool('Choose an assistant', '')">Open Assistant</button>
+        </div>
+      </nav>
+    </div>
+  </div>
 
-<section id="commercial">
-    <h2>Commercial Renovation Chatbot</h2>
-    <iframe src="https://faisasala.github.io/commercial-chatbot/" title="Commercial Chatbot"></iframe>
-</section>
+  <!-- HERO -->
+  <main id="home" class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="kicker">AI Renovation Help • Landed • HDB • Commercial • Interior</div>
+          <h1>Plan your renovation smarter — with the right assistant for your space.</h1>
+          <p class="sub">
+            This site is a clean hub. You pick the assistant you need, and it opens in a focused full-screen view.
+            No bots shown on the homepage.
+          </p>
 
-<section id="condo">
-    <h2>Condo Interior Design Chatbot</h2>
-    <iframe src="https://yantingg123.github.io/interior-design-chatbot-suite/" title="Condo Chatbot"></iframe>
-</section>
+          <div class="hero-actions">
+            <a class="btn primary" href="#assistants">Choose Assistant</a>
+            <button class="btn" onclick="openTool('Landed Renovation Advisor', 'https://shihan23016666.github.io/landed-renovation-advisor/')">Quick start (Landed)</button>
+          </div>
+        </div>
 
-<section id="hdb">
-    <h2>HDB Interior Design Chatbot</h2>
-    <iframe src="https://ganyuxuan23-droid.github.io/Interior-Design-Chatbot-Suite-HDB/" title="HDB Chatbot"></iframe>
-</section>
+        <div class="stat-card" id="about">
+          <div class="stat-top">
+            <p class="stat-title">What you can do here</p>
+            <p class="stat-text">
+              Get guidance for different renovation scenarios — regulations, planning, space ideas, and next steps —
+              using the assistant that matches your property type.
+            </p>
+          </div>
 
+          <div class="pill-row">
+            <span class="pill">Fast answers</span>
+            <span class="pill">Beginner-friendly</span>
+            <span class="pill">One hub</span>
+            <span class="pill">Clean UI</span>
+          </div>
+
+          <div class="hero-actions">
+            <a class="btn" href="#assistants">See assistants</a>
+            <a class="btn" href="https://shihan23016666.github.io/c240team/" target="_blank" rel="noopener">Open in new tab</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ASSISTANTS (cards only) -->
+  <section id="assistants" class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Choose an assistant</h2>
+          <p>Click **Open** to launch one assistant in a focused view. Or click **New tab** to open directly.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- Landed -->
+        <article class="card">
+          <div class="icon">🏠</div>
+          <h3>Landed Renovation Advisor</h3>
+          <p>Guidance for landed homes: planning, renovation considerations, and structured steps for major works.</p>
+          <div class="actions">
+            <button class="btn primary" onclick="openTool('Landed Renovation Advisor', 'https://shihan23016666.github.io/landed-renovation-advisor/')">Open</button>
+            <a class="btn" target="_blank" rel="noopener" href="https://shihan23016666.github.io/landed-renovation-advisor/">New tab</a>
+          </div>
+          <a class="tiny" href="#home">Back to top</a>
+        </article>
+
+        <!-- Commercial -->
+        <article class="card">
+          <div class="icon">🏢</div>
+          <h3>Commercial Chatbot</h3>
+          <p>For commercial renovation / fit-out guidance: quick help for business spaces and planning considerations.</p>
+          <div class="actions">
+            <button class="btn primary" onclick="openTool('Commercial Chatbot', 'https://faisasala.github.io/commercial-chatbot/')">Open</button>
+            <a class="btn" target="_blank" rel="noopener" href="https://faisasala.github.io/commercial-chatbot/">New tab</a>
+          </div>
+          <a class="tiny" href="#home">Back to top</a>
+        </article>
+
+        <!-- Condo / Interior suite -->
+        <article class="card">
+          <div class="icon">🛋️</div>
+          <h3>Interior Design Chatbot Suite</h3>
+          <p>Interior design support and renovation Q&A for general home spaces, layout ideas, and planning tips.</p>
+          <div class="actions">
+            <button class="btn primary" onclick="openTool('Interior Design Chatbot Suite', 'https://yantingg123.github.io/interior-design-chatbot-suite/')">Open</button>
+            <a class="btn" target="_blank" rel="noopener" href="https://yantingg123.github.io/interior-design-chatbot-suite/">New tab</a>
+          </div>
+          <a class="tiny" href="#home">Back to top</a>
+        </article>
+
+        <!-- HDB -->
+        <article class="card">
+          <div class="icon">🏘️</div>
+          <h3>HDB Interior Design Suite</h3>
+          <p>HDB-focused renovation and interior design assistant, with guidance tailored to HDB context.</p>
+          <div class="actions">
+            <button class="btn primary" onclick="openTool('HDB Interior Design Suite', 'https://ganyuxuan23-droid.github.io/Interior-Design-Chatbot-Suite-HDB/')">Open</button>
+            <a class="btn" target="_blank" rel="noopener" href="https://ganyuxuan23-droid.github.io/Interior-Design-Chatbot-Suite-HDB/">New tab</a>
+          </div>
+          <a class="tiny" href="#home">Back to top</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL (loads selected site) -->
+  <div id="toolModal" class="modal" role="dialog" aria-modal="true" aria-label="Assistant Viewer">
+    <div class="modal-card">
+      <div class="modal-top">
+        <p class="modal-title" id="toolTitle">Assistant</p>
+        <div class="modal-actions">
+          <a id="openNewTab" class="btn" href="#" target="_blank" rel="noopener">Open in new tab</a>
+          <button class="close" onclick="closeTool()">Close</button>
+        </div>
+      </div>
+      <iframe id="toolFrame" title="Assistant"></iframe>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div>© 2026 Renovation & Design Suite</div>
+        <div>Built as a simple hub to access multiple renovation assistants.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const modal = document.getElementById('toolModal');
+    const frame = document.getElementById('toolFrame');
+    const title = document.getElementById('toolTitle');
+    const openNewTab = document.getElementById('openNewTab');
+
+    function openTool(name, url){
+      title.textContent = name;
+
+      if(url){
+        frame.src = url;
+        openNewTab.href = url;
+        openNewTab.style.display = 'inline-flex';
+      }else{
+        frame.src = '';
+        openNewTab.href = '#';
+        openNewTab.style.display = 'none';
+      }
+
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTool(){
+      modal.classList.remove('open');
+      frame.src = ''; // stop loading
+      document.body.style.overflow = '';
+    }
+
+    // close when clicking outside
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) closeTool();
+    });
+
+    // ESC to close
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && modal.classList.contains('open')) closeTool();
+    });
+  </script>
 </body>
 </html>
